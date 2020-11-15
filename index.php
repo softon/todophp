@@ -1,3 +1,7 @@
+<?php 
+    include_once('config.php');
+    include_once('database.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,10 +14,25 @@
 </head>
 <body>
     <div class="container">
-        <form action="">
+        <form action="process.php" method="POST">
             <div class="todo-table">
                 <h1>My Todo's</h1>
-                <h6>4 Total, 1 Complete and 3 Pending</h6>
+                <h6><?php 
+                            $sql = "SELECT * FROM todos";
+                            $result = mysqli_query($db,$sql);
+                            $todos = mysqli_fetch_all($result);
+                            $total = count($todos);
+                            $complete = 0;
+                            //mysqli_bind_param()
+                            foreach($todos as $todo){
+
+                                if($todo[2]==true){
+                                    $complete++;
+                                }
+                            }
+                            echo $total." Total, ".$complete." Complete,".($total-$complete)." Pending.";
+                        ?>
+                </h6>
                 <div class="btn-holder">
                     <a href="add-todo.html" class="btn btn-primary"><i class="fa fa-plus"></i> Add New Todo</a>
                     <button name="action" value="edit" class="btn btn-secondary"><i class="fa fa-edit"></i> Edit Todo</button>
@@ -21,6 +40,10 @@
                     <button name="action" value="complete" class="btn btn-purple"><i class="fa fa-thumbs-up"></i> Mark Complete</button>
                     <button name="action" value="pending" class="btn btn-orange"><i class="fa fa-thumbs-down"></i> Mark Pending</button>
                 </div>
+                <p style="margin-top: 10px;">
+                    <?php if(!empty($_GET['error'])) echo "Error : ".$_GET['error']; ?>
+                    <?php if(!empty($_GET['success'])) echo "Success : ".$_GET['success']; ?>
+                </p>
                 <table>
                     <thead>
                         <tr>
@@ -30,26 +53,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><input  type="radio" required name="todo" value="1" id=""></td>
-                            <td>Drink Milk</td>
-                            <td>Pending</td>
-                        </tr>
-                        <tr>
-                            <td><input type="radio" required name="todo" value="2" id=""></td>
-                            <td>Make Breakfast</td>
-                            <td>Pending</td>
-                        </tr>
-                        <tr class="complete">
-                            <td><input type="radio" required name="todo" value="3" id=""></td>
-                            <td>Eat Lunch</td>
-                            <td>Complete</td>
-                        </tr>
-                        <tr>
-                            <td><input type="radio" required name="todo" value="4" id=""></td>
-                            <td>Sleep</td>
-                            <td>Pending</td>
-                        </tr>
+                        <?php 
+                            foreach($todos as $todo){
+                        ?>
+                            <tr class="<?php echo $todo[2]?'complete':''; ?>">
+                                <td><input  type="radio" required name="todo" value="<?php echo $todo[0]; ?>" id=""></td>
+                                <td><?php echo $todo[1]; ?></td>
+                                <td><?php echo $todo[2]?'Complete':'Pending'; ?></td>
+                            </tr>
+                        <?php } ?>
+                       
                     </tbody>
                 </table>
             </div>

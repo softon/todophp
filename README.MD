@@ -1,4 +1,4 @@
-# My Todo App ([Demo](https://mytodoapp.epizy.com))
+# My Todo App ([Demo](http://mytodoapp.epizy.com))
 
 A simple Todo App designed with the help of HTML/CSS & PHP & MySQL.
 
